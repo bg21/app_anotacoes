@@ -1,18 +1,41 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, TextInput, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, TextInput } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function App() {
   const [estado, setarEstado] = useState('leitura');
   const [anotacao, setarAnotacao] = useState("");
 
 
+  useEffect(()=>{
+    //pra quando inicializar o app queremos que leia a key anotação
+      (async() => {
+        try {
+          const anotacaoLeitura = await AsyncStorage.getItem("anotacao");
+          setarAnotacao(anotacaoLeitura)
+        } catch (error) {
+          
+        }
+      })();
+  },[])
+
+  setData = async() => {
+    try {
+      await AsyncStorage.setItem('anotacao', anotacao)
+    } catch (error) {
+      
+    }
+
+  }
+
   
 
   if(estado == 'leitura'){
     return (
-      <SafeAreaView>
-        <StatusBar style="light"/>
+      <View>
+        <StatusBar hidden/>
         <View style={styles.header}>
           <Text style={styles.font}>Aplicativo de Anotações</Text>
         </View>
@@ -42,21 +65,22 @@ export default function App() {
           </TouchableOpacity>
           }
         </View>
-      </SafeAreaView>
+      </View>
     );
   }else if(estado == "atualizando"){
     return (
-      <SafeAreaView>
+      <View>
+        <StatusBar hidden/>
         <View style={styles.header}>
           <Text style={styles.font}>Aplicativo de Anotações</Text>
         </View>
 
-        <TextInput style={{textAlignVertical:"top"}} onChangeText={(text)=>setarAnotacao(text)} value={anotacao} multiline={true} numberOfLines={5}></TextInput>
+        <TextInput autoFocus={true} style={{textAlignVertical:"top"}} onChangeText={(text)=>setarAnotacao(text)} value={anotacao} multiline={true} numberOfLines={5}></TextInput>
         
         <View style={styles.button}>
-          <TouchableOpacity style={styles.borderSalvar} onPress={()=> setarEstado("leitura")} ><Text style={styles.fontBorderSalvar}>Salvar</Text></TouchableOpacity>
+          <TouchableOpacity onPress={setData()} style={styles.borderSalvar} onPress={()=> setarEstado("leitura")} ><Text style={styles.fontBorderSalvar}>Salvar</Text></TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
   
