@@ -1,30 +1,52 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, TextInput } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, TextInput, SafeAreaView } from 'react-native';
 
 export default function App() {
   const [estado, setarEstado] = useState('leitura');
-  const [anotacao, setarAnotacao] = useState("Minha anotação");
+  const [anotacao, setarAnotacao] = useState("");
 
+
+  
 
   if(estado == 'leitura'){
     return (
-      <View>
+      <SafeAreaView>
+        <StatusBar style="light"/>
         <View style={styles.header}>
           <Text style={styles.font}>Aplicativo de Anotações</Text>
         </View>
+        {
 
-        <View style={styles.body}>
-          <Text style={styles.fontBody}>{anotacao}</Text>
-        </View>
+          (anotacao != "") ?
+          <View style={styles.body}>
+            <Text style={styles.fontBody}>{anotacao}</Text>
+          </View>
+          :
+          <View><Text>Nenhuma anotação encontrada...</Text></View>
+        }
+
         <View style={styles.button}>
-          <TouchableOpacity onPress={()=> setarEstado("atualizando")} style={styles.border}><Text style={styles.fontBorder}>+</Text></TouchableOpacity>
+
+          {
+            (anotacao == "")?
+          
+          <TouchableOpacity onPress={()=> setarEstado("atualizando")} style={styles.border}>
+            <Text style={styles.fontBorder}>+</Text>
+            
+          </TouchableOpacity>
+          :
+          <TouchableOpacity onPress={()=> setarEstado("atualizando")} style={styles.borderSalvar}>
+            <Text style={styles.fontBorderSalvar}>Editar</Text>
+            
+          </TouchableOpacity>
+          }
         </View>
-      </View>
+      </SafeAreaView>
     );
   }else if(estado == "atualizando"){
     return (
-      <View>
+      <SafeAreaView>
         <View style={styles.header}>
           <Text style={styles.font}>Aplicativo de Anotações</Text>
         </View>
@@ -34,7 +56,7 @@ export default function App() {
         <View style={styles.button}>
           <TouchableOpacity style={styles.borderSalvar} onPress={()=> setarEstado("leitura")} ><Text style={styles.fontBorderSalvar}>Salvar</Text></TouchableOpacity>
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
   
